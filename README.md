@@ -7,23 +7,19 @@ EmsPlus Modding Guide: Creating Custom Callouts
 
 To create an addon, you must create a new Class Library (.NET Framework 4.8) project in Visual Studio.
 
-Required References:
+# Required References:
 
 Add the following .dll files as references to your project:
 
-RagePluginHook.dll (found in your GTA V folder).
+```
+RagePluginHookSDK.dll (found in the manual install of LSPD:FR).
+EmsPlus.dll (found in Plugins Folder of every EmsPlus release).
+```
 
-EmsPlus.dll (found in Plugins/EmsPlus/).
-
-Namespace and Inheritance:
-
+# Namespace and Inheritance:
 Your callout class must be public and inherit from EmsCallout.
 
-code
-C#
-download
-content_copy
-expand_less
+```
 using EmsPlus.Framework;
 using EmsPlus.Framework.Medical;
 using Rage;
@@ -40,15 +36,12 @@ namespace MyEmsPack.Callouts
         // ...
     }
 }
-2. Defining Callout Details
+```
 
+# Defining Callout Details
 The OnBeforeCalloutDisplayed method handles the metadata and spawn logic.
 
-code
-C#
-download
-content_copy
-expand_less
+```
 public override bool OnBeforeCalloutDisplayed()
 {
     // 1. Dispatch Info
@@ -72,15 +65,12 @@ public override bool OnBeforeCalloutDisplayed()
 
     return true;
 }
-3. Setting Up the Patient (Components)
+```
 
+# Setting Up the Patient (Components)
 This is where you define the medical logic using Components (Lego blocks). You don't need to write code for the menus; EmsPlus builds them automatically based on the conditions you add.
 
-code
-C#
-download
-content_copy
-expand_less
+```
 public override bool OnCalloutAccepted()
 {
     base.OnCalloutAccepted();
@@ -119,32 +109,27 @@ public override bool OnCalloutAccepted()
 
     return true;
 }
-4. Custom Dispatch Audio
+```
 
+# Custom Dispatch Audio
 EmsPlus uses the LSPDFR Audio Standard.
 
 Filename Convention:
 
 If your CalloutName = "Assault Victim", the mod cleans the string and looks for:
-Plugins/EmsPlus/Audio/Dispatch/Callouts/REPORT_ASSAULT_VICTIM_01.wav
+"Plugins/EmsPlus/Audio/Dispatch/Callouts/REPORT_ASSAULT_VICTIM_01.wav"
 
 Folder Structure:
-
+```
 Streets: STREET_[NAME]_01.wav
-
 Zones: AREA_[NAME]_01.wav
-
 Callouts: REPORT_[NAME]_01.wav
+```
 
-5. Scene Management (Process and End)
-
+# Scene Management (Process and End)
 Handle the transition from "responding" to "on-scene."
 
-code
-C#
-download
-content_copy
-expand_less
+```
 public override void Process()
 {
     base.Process();
@@ -168,24 +153,18 @@ public override void End()
     if (patient.Exists() && !GameState.CurrentPatient.IsOnStretcher) 
         patient.Dismiss();
 }
-6. Pro-Tips for Callout Creators
+```
+
+# Tips for Callout Creators
 Anatomical Awareness
-
 The AnatomicalRegistry in EmsPlus enforces rules.
-
 If you add a Tourniquet requirement to a wound on the Head, the paramedic cannot treat it. The marker will not turn green.
-
 Always ensure your RequiredTreatments match the bone (e.g., Use WoundPacking for Head/Torso bleeds).
 
-Creating Medical Puzzles
-
+# Creating Medical Puzzles
 You can create custom conditions with side effects using ReactToTreatment.
 
-code
-C#
-download
-content_copy
-expand_less
+```
 public class MyAllergy : MedicalCondition {
     public override void ReactToTreatment(Patient p, EmsTreatment t) {
         if (t == EmsTreatment.Analgesia) {
@@ -194,9 +173,12 @@ public class MyAllergy : MedicalCondition {
         }
     }
 }
-Installation for Users
+```
+
+# Installation for Users
 
 Addon developers should distribute their mod as a single .dll. Users install it by placing it in:
-Grand Theft Auto V/Plugins/EmsPlus/Callouts/YourModName.dll
-
+```
+Grand Theft Auto V/Plugins/EmsPlus/Plugins/"YourModName.dll"
+```
 EmsPlus will automatically detect the file, load the classes, and inject them into the random callout pool.
