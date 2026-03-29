@@ -20,8 +20,10 @@ EmsPlus.dll (found in Plugins Folder of every EmsPlus release).
 Your callout class must be public and inherit from EmsCallout.
 
 ```
-using EmsPlus.Framework;
-using EmsPlus.Framework.Medical;
+using EmsPlus.Core;
+using EmsPlus.Managers;
+using EmsPlus.Medical;
+using EmsPlus.Callouts;
 using Rage;
 
 namespace MyEmsPack.Callouts
