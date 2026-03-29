@@ -1,9 +1,7 @@
-﻿using EmsPlus;
-using EmsPlus.Core;
-using EmsPlus.Framework;
+﻿using EmsPlus.Core;
 using EmsPlus.Managers;
-using EmsPlus.Medical.Conditions;
-using EmsPlus.Medical.Frameworks;
+using EmsPlus.Medical;
+using EmsPlus.Callouts;
 using Rage;
 
 namespace MyEmsPack.Callouts
