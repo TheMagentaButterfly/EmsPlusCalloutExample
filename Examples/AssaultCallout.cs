@@ -1,17 +1,19 @@
-﻿using EmsPlus.Core;
+﻿using EmsPlus;
+using EmsPlus.Callouts;
+using EmsPlus.Core;
 using EmsPlus.Managers;
 using EmsPlus.Medical;
-using EmsPlus.Callouts;
 using Rage;
-using EmsPlus;
+using System.Drawing;
 
 namespace MyEmsPack.Callouts
 {
     public class MyCustomCallout : EmsCallout
     {
         private Ped patient;
-        private Blip patientBlip;
+        private Blip blip;
         private Vector3 spawnPos;
+        private bool hasArrivedAtScene = false;
 
         public override bool OnBeforeCalloutDisplayed()
         {
@@ -54,8 +56,11 @@ namespace MyEmsPack.Callouts
             p.BloodPressure = VitalState.Low;
 
             p.ApplyVisuals();
-            patientBlip = new Blip(patient) { Color = System.Drawing.Color.Yellow };
-            patientBlip.Sprite = (BlipSprite)280;
+
+            blip = new Blip(patient);
+            blip.Color = Color.Red;
+            blip.Name = "Medical Emergency";
+            blip.IsRouteEnabled = true;
 
             return true;
         }
@@ -64,16 +69,31 @@ namespace MyEmsPack.Callouts
         {
             base.Process();
 
-            if (patientBlip.Exists() && Game.LocalPlayer.Character.DistanceTo(patient) < 20f)
+            if (!hasArrivedAtScene && Game.LocalPlayer.Character.DistanceTo(patient) < 25f)
             {
-                patientBlip.IsRouteEnabled = false;
+                hasArrivedAtScene = true;
+
+                if (blip.Exists()) blip.Delete();
+
+                blip = patient.AttachBlip();
+                blip.Sprite = (BlipSprite)280;
+                blip.Color = Color.Yellow;
+                blip.Name = "Patient";
+                blip.IsRouteEnabled = false;
+            }
+
+            if (hasArrivedAtScene && blip.Exists()
+                && GameState.CurrentPatient != null
+                && GameState.CurrentPatient.IsOnStretcher)
+            {
+                blip.Delete();
             }
         }
 
         public override void End()
         {
             base.End();
-            if (patientBlip.Exists()) patientBlip.Delete();
+            if (blip.Exists()) blip.Delete();
 
             if (patient.Exists() && !GameState.CurrentPatient.IsOnStretcher)
                 patient.Dismiss();
