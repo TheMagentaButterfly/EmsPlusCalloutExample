@@ -3,6 +3,7 @@ using EmsPlus.Managers;
 using EmsPlus.Medical;
 using EmsPlus.Callouts;
 using Rage;
+using EmsPlus;
 
 namespace MyEmsPack.Callouts
 {
