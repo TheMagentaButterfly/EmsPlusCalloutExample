@@ -15,6 +15,13 @@ namespace MyEmsPack.Callouts
         private Vector3 spawnPos;
         private bool hasArrivedAtScene = false;
 
+        public MyCustomCallout()
+        {
+            AddExclusionZone(ExclusionZoneType.Stations);
+            AddExclusionZone(ExclusionZoneType.Highways);
+            AddExclusionZone(ExclusionZoneType.Hospitals);
+        }
+
         public override bool OnBeforeCalloutDisplayed()
         {
             CalloutName = "Assault Victim";
